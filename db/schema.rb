@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141208112457) do
+ActiveRecord::Schema.define(version: 20141209055052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,6 @@ ActiveRecord::Schema.define(version: 20141208112457) do
   create_table "czces", force: true do |t|
     t.string   "product_type"
     t.datetime "ticktime"
-    t.string   "float"
     t.float    "last_volume"
     t.float    "last_total_price"
     t.float    "bid_price"
@@ -30,6 +29,8 @@ ActiveRecord::Schema.define(version: 20141208112457) do
     t.float    "trade_volume"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "contract_month"
+    t.float    "last_price"
   end
 
 end
