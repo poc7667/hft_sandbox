@@ -35,7 +35,7 @@ capybara-*.html
 
 #for store secret file
 config/application.yml
-config/database.yml
+#config/database.yml
 
 ## generic files to ignore
 *~
@@ -43,4 +43,51 @@ config/database.yml
 *.DS_Store
 *.swp
 *.out
+public/assets/
 
+/lib/tasks/sony_alarm/testing_data/*
+/lib/tasks/sony_alarm/old_data/
+/lib/auto_modules/vvtk_http_stream
+lib/mvass/*.json
+vvtk_http_stream
+
+/bin/rails
+/bin/rake
+/bin/spring
+
+/solr/conf/elevate.xml
+/solr/conf/mapping-ISOLatin1Accent.txt
+/solr/conf/protwords.txt
+/solr/conf/spellings.txt
+/solr/conf/stopwords.txt
+/solr/conf/synonyms.txt
+/solr/default/
+/solr/development/
+/solr/test/
+
+/solr/pids/
+
+/mvaas.sql
+/mvaas_api_logs.dump
+/users.sql
+
+/public/testing_files/
+
+/public/nas/
+
+/tool/
+
+public/nas
+reboot_record.txt
+Gemfile.server
+solr.1
+
+db/migrate/20141201081652_acts_as_taggable_on_migration.acts_as_taggable_on_engine.rb
+db/migrate/20141201081653_add_missing_unique_indices.acts_as_taggable_on_engine.rb
+db/migrate/20141201081654_add_taggings_counter_cache_to_tags.acts_as_taggable_on_engine.rb
+db/migrate/20141201081655_add_missing_taggable_index.acts_as_taggable_on_engine.rb
+
+Gemfile.server
+public/nas
+reboot_record.txt
+solr.1
