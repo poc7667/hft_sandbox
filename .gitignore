@@ -91,3 +91,4 @@ Gemfile.server
 public/nas
 reboot_record.txt
 solr.1
+/lib/tasks/sample_data/
