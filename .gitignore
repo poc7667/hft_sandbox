@@ -92,3 +92,7 @@ public/nas
 reboot_record.txt
 solr.1
 /lib/tasks/sample_data/
+
+/lib/tasks/sample_import_CZCE.error.log
+
+/lib/tasks/import_CZCE.error.log
