@@ -1,0 +1,1 @@
+rails g model DataSource market:string product_type:string  transaction_date:datetime file_name:string md5_sum:text comment:string
