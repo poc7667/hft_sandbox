@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b User:
+  = @query.user_id
+%p
+  %b Query content:
+  = @query.query_content
+
+= link_to 'Edit', edit_query_path(@query)
+\|
+= link_to 'Back', queries_path
