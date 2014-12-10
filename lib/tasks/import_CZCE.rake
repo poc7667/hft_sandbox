@@ -2,10 +2,12 @@ desc "Import cheng zhou commedies exchange"
 namespace :import do
   task :czce => :environment do
     require File.expand_path('attributes_parser', File.dirname(__FILE__))
+    require File.expand_path('import_data_helper', File.dirname(__FILE__))
     include AttributesParser
+    include ImportDataHelper
 
-    Czce.destroy_all
-    ActiveRecord::Base.connection.reset_pk_sequence!(:czces)
+    # Czce.destroy_all
+    # ActiveRecord::Base.connection.reset_pk_sequence!(:czces)
 
     def import_to_db(im_file_path, tick_date, product_type, contract_month)
       File.open(im_file_path,'r').each_with_index do |row, i|
@@ -56,24 +58,30 @@ namespace :import do
     #   :contract_month => :datetime
     end
 
-    folder = File.expand_path("../sample_data/CZCE", __FILE__)
-    Dir["#{folder}/**/*.txt"].each_with_index do |im_file_path, i|
-      begin
-        print "#{i}:#{im_file_path}"
-        toks = im_file_path.split('/')
-        contract_month = get_contract_month(toks.last)
-        tick_date = get_tick_date(toks[-4], toks[-2])
-        product_type = toks[-3]
-        import_to_db(im_file_path, tick_date, product_type, contract_month)
-      rescue Exception => e
-        ap(e)
-        next
+    File.open(get_error_log_path(__FILE__),'w') do |error_log|
+      Dir["#{get_market_folder("CZCE", __FILE__)}/**/*.txt"].each_with_index do |im_file_path, i|
+        begin
+          toks = im_file_path.split('/')
+          contract_month = get_contract_month(toks.last)
+          tick_date = get_tick_date(toks[-4], toks[-2])
+          product_type = toks[-3]
+
+          DataSource.create(
+            market: "czce",
+            product_type:  product_type,
+            transaction_date: tick_date,
+            file_name: File.basename(im_file_path, ".txt"),
+            md5_sum: Digest::MD5.file(im_file_path).hexdigest
+          )
+          binding.pry
+
+          # import_to_db(im_file_path, tick_date, product_type, contract_month)
+        rescue Exception => e
+          error_log.puts "File: #{im_file_path} \nError: #{e}\n"
+          next
+        end
+        p "#{i}:#{im_file_path}\n"
       end
-      # [11] "CZCE",
-      # [12] "201402",
-      # [13] "CF",
-      # [14] "0207",
-      # [15] "CF405.txt"
     end
 
   end
