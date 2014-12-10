@@ -2,6 +2,10 @@
 
 #  Model: DataSource
 
+## Introduction
+
+- 替每一個讀入的 data source 算出一個 md5sum , 以避免有重複的 data source 存入資料庫
+
 ## Scheme
 
 TODO: index , mar
@@ -17,4 +21,6 @@ TODO: index , mar
 	          :created_at => :datetime,
 	          :updated_at => :datetime
 	}
+
+
 
