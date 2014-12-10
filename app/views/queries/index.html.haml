@@ -1,0 +1,23 @@
+%h1 Listing queries
+
+%table
+  %thead
+    %tr
+      %th User
+      %th Query content
+      %th
+      %th
+      %th
+      
+  %tbody
+    - @queries.each do |query|
+      %tr
+        %td= query.user_id
+        %td= query.query_content
+        %td= link_to 'Show', query
+        %td= link_to 'Edit', edit_query_path(query)
+        %td= link_to 'Destroy', query, :method => :delete, :data => { :confirm => 'Are you sure?' }
+
+%br
+
+= link_to 'New Query', new_query_path
