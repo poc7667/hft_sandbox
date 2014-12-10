@@ -1,5 +1,14 @@
 以下 Model 的定義就是 database 裡面 table 的意思
 
+# Model: CZCE
+## Introuduction
+
+- 存放 CZCE 市場的資訊
+![](http://i.imgur.com/MuUlAZK.png)
+
+
+- 避免資料數量過多， overflow 造成異常 Change column 'id' from int to bigint
+
 #  Model: DataSource
 
 ## Introduction
