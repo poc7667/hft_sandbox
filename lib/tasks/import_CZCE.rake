@@ -59,6 +59,7 @@ namespace :import do
     end
 
     File.open(get_error_log_path(__FILE__),'w') do |error_log|
+
       Dir["#{get_market_folder("CZCE", __FILE__)}/**/*.txt"].each_with_index do |im_file_path, i|
         begin
           toks = im_file_path.split('/')
@@ -73,11 +74,11 @@ namespace :import do
             file_name: File.basename(im_file_path, ".txt"),
             md5_sum: Digest::MD5.file(im_file_path).hexdigest
           )
-          binding.pry
-
-          # import_to_db(im_file_path, tick_date, product_type, contract_month)
+          import_to_db(im_file_path, tick_date, product_type, contract_month)
         rescue Exception => e
-          error_log.puts "File: #{im_file_path} \nError: #{e}\n"
+          error_msg = "File: #{im_file_path} \nError: #{e}\n"
+          ap(error_msg)
+          error_log.puts(error_msg)
           next
         end
         p "#{i}:#{im_file_path}\n"
