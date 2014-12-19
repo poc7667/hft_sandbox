@@ -96,3 +96,5 @@ solr.1
 /lib/tasks/sample_import_CZCE.error.log
 
 /lib/tasks/import_CZCE.error.log
+
+/2014-02-07 01:00:00
