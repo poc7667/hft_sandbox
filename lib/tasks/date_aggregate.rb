@@ -40,7 +40,7 @@ module DateAggregate
   def get_query_command(frequence, contract_month, product_type='SR', market='czces')
     %{
       SELECT DISTINCT ON (1)
-           date_trunc('#{frequence}', ticktime) AS ticktime
+           date_trunc('#{frequence}', ticktime) AS time
          , first_value(last_price) OVER w AS open
          , max(last_price)         OVER w AS high
          , min(last_price)         OVER w AS low
