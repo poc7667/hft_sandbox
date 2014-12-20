@@ -4,6 +4,14 @@ namespace :sampling do
     require File.expand_path('date_aggregate', File.dirname(__FILE__))
     include DateAggregate
 
+    def need_fill_empty?(frequence)
+     if [:second, :minute, :hourly].include? frequence.to_sym
+      return true
+     else
+      return false
+     end
+    end
+
     frequences = [
       :minute,
       :hour,
@@ -12,26 +20,31 @@ namespace :sampling do
       :month,
       :second,
     ]
+  
 
     # get target_month
     get_contract_month_by_product_type.each_with_index do |t, i|
-      ap(t)
-      frequences.each do |frequency|
-        query_cmd = get_query_command(frequency, t["contract_month"], t["product_type"], 'czces')
+      frequences.each do |frequence|
+        if need_fill_empty? frequence
+          query_cmd = get_query_command_interval_filling(frequence, t["contract_month"], t["product_type"], 'czces')
+        else
+          query_cmd = get_query_command(frequence, t["contract_month"], t["product_type"], 'czces')
+        end
+        print(query_cmd)
         ActiveRecord::Base.connection.execute(query_cmd).each_with_index do |raw_record, j|
           rec = raw_record.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
           hft = CzceHft.create(
               product_type: t["product_type"],
               contract_month: t["contract_month"],
-              open: rec[:open],
-              high: rec[:high],
-              low: rec[:low],
-              close: rec[:close],
-              volume: rec[:volume],
-              frequency: frequency,
-              ticktime: rec[:ticktime],
+              open: rec[:open].to_f,
+              high: rec[:high].to_f,
+              low: rec[:low].to_f,
+              close: rec[:close].to_f,
+              volume: rec[:volume].to_f,
+              frequence: frequence,
+              time: rec[:time],
             )
-          ap(hft) if (j%10==0)
+          ap(hft) if (j%1000==0)
         end
       end
     end
