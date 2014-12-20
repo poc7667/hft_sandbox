@@ -4,6 +4,14 @@ namespace :sampling do
     require File.expand_path('date_aggregate', File.dirname(__FILE__))
     include DateAggregate
 
+    def need_fill_empty?(frequence)
+     if [:second, :minute, :hourly].include? frequence.to_sym
+      return true
+     else
+      return false
+     end
+    end
+
     frequences = [
       :minute,
       :hour,
@@ -12,7 +20,7 @@ namespace :sampling do
       :month,
       :second,
     ]
-
+  
 
     # get target_month
     get_contract_month_by_product_type.each_with_index do |t, i|
