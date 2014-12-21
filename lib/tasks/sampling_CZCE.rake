@@ -20,7 +20,6 @@ namespace :sampling do
       :week,
       :month,
     ]
-  
 
     # get target_month
     get_contract_month_by_product_type.each_with_index do |t, i|
@@ -30,7 +29,8 @@ namespace :sampling do
         else
           query_cmd = get_query_command(frequence, t["contract_month"], t["product_type"], 'czces')
         end
-        print(query_cmd)
+        # binding.pry
+        # print(query_cmd)
         ActiveRecord::Base.connection.execute(query_cmd).each_with_index do |raw_record, j|
           rec = raw_record.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
           hft = CzceHft.create(
@@ -44,7 +44,7 @@ namespace :sampling do
               frequence: frequence,
               time: rec[:time],
             )
-          ap(hft) if (j%1000==0)
+          ap(hft) if (j%50000==0)
         end
       end
     end

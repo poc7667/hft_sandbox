@@ -59,6 +59,7 @@ module DateAggregate
     }.gsub(/\s+/, " ").strip
   end
 
+
   def get_query_command_interval_filling(frequence, contract_month, product_type='SR', market='czces')
     %{
         SELECT DISTINCT ON (time)
@@ -72,12 +73,13 @@ module DateAggregate
            t.contract_month           
         FROM 
         (
-          SELECT   DISTINCT ON (1) generate_series
+          SELECT DISTINCT ON (1) generate_series
           (
             min(ticktime)::timestamp,
             max(ticktime)::timestamp,
             '1 #{frequence}'::interval
-          ) AS ticktime FROM czces  
+          ) AS ticktime FROM czces WHERE product_type ='#{product_type}' AND contract_month = '#{contract_month}'::timestamp
+
         ) time_series         
         LEFT JOIN
         (
@@ -97,7 +99,9 @@ module DateAggregate
                          ROWS BETWEEN UNBOUNDED PRECEDING
                                   AND UNBOUNDED FOLLOWING)
         ) t USING (ticktime)
-        WHERE time_series.ticktime::time >= '00:59 am'::time AND time_series.ticktime::time < '7:00 am'::time
+        WHERE time_series.ticktime::time >= '00:59 am'::time 
+        AND time_series.ticktime::time < '7:00 am'::time
+
         ORDER BY 1 
         ;
 
