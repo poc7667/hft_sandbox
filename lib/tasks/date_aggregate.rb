@@ -61,7 +61,7 @@ module DateAggregate
 
   def get_query_command_interval_filling(frequence, contract_month, product_type='SR', market='czces')
     %{
-        SELECT 
+        SELECT DISTINCT ON (time)
            time_series.ticktime AS time,
            t.high,
            t.low,
