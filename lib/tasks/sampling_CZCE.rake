@@ -13,12 +13,12 @@ namespace :sampling do
     end
 
     frequences = [
+      :second,
       :minute,
       :hour,
       :day,
       :week,
       :month,
-      :second,
     ]
   
 
