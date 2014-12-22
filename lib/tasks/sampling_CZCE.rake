@@ -1,8 +1,9 @@
 desc "Import cheng zhou commedies exchange"
 namespace :sampling do
   task :czce => :environment do
-    require File.expand_path('date_aggregate', File.dirname(__FILE__))
     include DateAggregate
+    require File.expand_path('sql_helper', File.dirname(__FILE__))
+    include SqlHelper
 
     def need_fill_empty?(frequence)
      if [:second, :minute, :hourly].include? frequence.to_sym
