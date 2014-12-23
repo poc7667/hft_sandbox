@@ -11,10 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141220064117) do
+ActiveRecord::Schema.define(version: 20141223035539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "cffexes", force: true do |t|
+    t.string   "product_type"
+    t.datetime "contract_month"
+    t.datetime "ticktime"
+    t.float    "last_price"
+    t.float    "last_volume"
+    t.float    "last_total_price"
+    t.float    "bid_price"
+    t.float    "bid_volume"
+    t.float    "ask_price"
+    t.float    "ask_volume"
+    t.float    "open_interest"
+    t.float    "trade_volume"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "czce_hfts", force: true do |t|
     t.string   "product_type"
