@@ -89,7 +89,8 @@ module SqlHelper
                          ROWS BETWEEN UNBOUNDED PRECEDING
                          AND UNBOUNDED FOLLOWING)
         ) t USING (ticktime)
-        WHERE time_series.ticktime::time >= '00:59 am'::time 
+        WHERE 
+        time_series.ticktime::time >= '00:59 am'::time 
         AND time_series.ticktime::time < '7:00 am'::time
         AND time_series.ticktime > '#{begin_time}'::TIMESTAMP 
         ORDER BY 1 
