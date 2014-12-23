@@ -4,9 +4,9 @@ module AttributesParser
     numbers = raw_data.scan( /\d+/ )
     if 1 == numbers.count
       raw_target_month = numbers.first
-      if 4 == raw_target_month.length
+      if 4 == raw_target_month.length 
         return "20#{raw_target_month[0..1]}/#{raw_target_month[2..-1]}/01".to_datetime
-      elsif 3 == raw_target_month.length
+      elsif 3 == raw_target_month.length 
         return "201#{raw_target_month[0]}/#{raw_target_month[1..-1]}/01".to_datetime
       else
         return false
