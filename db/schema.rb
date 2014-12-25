@@ -11,10 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141223035539) do
+ActiveRecord::Schema.define(version: 20141225073700) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "cffex_hfts", force: true do |t|
+    t.string   "product_type"
+    t.datetime "contract_month"
+    t.string   "frequence"
+    t.datetime "time"
+    t.float    "open"
+    t.float    "high"
+    t.float    "low"
+    t.float    "close"
+    t.float    "volume"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "cffex_hfts", ["product_type", "contract_month", "frequence", "time"], name: "cffex_hfts_index", unique: true, using: :btree
 
   create_table "cffexes", force: true do |t|
     t.string   "product_type"
