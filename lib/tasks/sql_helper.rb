@@ -65,8 +65,8 @@ module SqlHelper
         (
           SELECT DISTINCT ON (1) generate_series
           (
-            min(ticktime)::timestamp,
-            max(ticktime)::timestamp,
+            date_trunc('second', min(ticktime)::TIMESTAMP),
+            max(ticktime)::TIMESTAMP,
             '1 #{frequence}'::interval
           ) AS ticktime FROM czces WHERE product_type ='#{product_type}' AND contract_month = '#{contract_month}'::timestamp
 
