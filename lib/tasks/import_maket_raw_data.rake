@@ -1,6 +1,6 @@
 desc "Import cheng zhou commedies exchange"
 namespace :import do
-  task :czce => :environment do
+  task :market => :environment do
     require File.expand_path('attributes_parser', File.dirname(__FILE__))
     require File.expand_path('import_data_helper', File.dirname(__FILE__))
     include AttributesParser
