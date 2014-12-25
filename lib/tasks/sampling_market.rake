@@ -1,6 +1,6 @@
 desc "Import cheng zhou commedies exchange"
 namespace :sampling do
-  task :czce => :environment do
+  task :market => :environment do
     require File.expand_path('sql_helper', File.dirname(__FILE__))
     require File.expand_path('sampling_helper', File.dirname(__FILE__))
     include SqlHelper
@@ -14,8 +14,7 @@ namespace :sampling do
      end
     end
 
-    frequences = [ :second, :minute, :hour, :day, :week, :month,
-    ]
+    frequences = [ :second, :minute, :hour, :day, :week, :month, :year ]
 
     ["cffexes","czces"].each do |market|
       # get target_month
@@ -28,7 +27,6 @@ namespace :sampling do
           else
             query_cmd = get_query_command(frequence, t["contract_month"], t["product_type"], market, sampling_begin_time)
           end
-          binding.pry
           ActiveRecord::Base.connection.execute(query_cmd).each_with_index do |raw_record, j|
             rec = raw_record.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
             begin
@@ -48,35 +46,10 @@ namespace :sampling do
               ap(query_cmd)          
               next
             end
-            ap(hft) if (j%50000==0)
+            ap(hft) if (j%200000==0)
           end
         end
       end
     end # end of market
-
-    # q_str = query_by_interval('minute', '2014-02-07 01:00:00', '2014-02-07 01:01:00')
-    # p q_str
-    # res = Czce.where{product_type == 'SR' }
-    #       .where{ticktime >=  '2014-02-07 01:00:00'}
-    #       .where{ticktime < '2014-02-07 01:01:00'}
-    #       .where{ contract_month == '2014-09-01 00:00:00' }
-
-    # last_volume = 0
-    # res.each do |row|
-    #   last_volume += row[:last_volume].to_i
-    #   # ap(row)
-    # end
-    # # res.each do |row|
-    # #   ap(row)
-    # # end
-    # binding.pry
-    # ActiveRecord::Base.connection.execute(q_str).each do |row|
-    #   binding.pry
-    #   p row
-    # end
-    # binding.pry
-    # p q_str
-
-
   end
 end
