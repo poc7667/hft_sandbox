@@ -20,12 +20,12 @@ module ImportDataHelper
         psql_tbl: "cffexes",
         tbl_name: "Cffex"
       },
-      # {
-      #   folder: "CZCE",
-      #   market: "czce",
-      #   psql_tbl: "czces",
-      #   tbl_name: "Czce"
-      # }
+      {
+        folder: "CZCE",
+        market: "czce",
+        psql_tbl: "czces",
+        tbl_name: "Czce"
+      }
     ]
   end
 end
