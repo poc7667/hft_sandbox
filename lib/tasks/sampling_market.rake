@@ -6,31 +6,24 @@ namespace :sampling do
     include SqlHelper
     include SamplingHelper
 
-    def fill_empty_sampling_interval?(frequence)
-     if [:second, :minute, :hourly].include? frequence.to_sym
-      return true
-     else
-      return false
-     end
-    end
+    frequences = [ :day, :second, :minute, :hour, :week, :month, :year]
+    markets = [
+      {"name" => "cffexes", "model_name" => "CffexHft"},
+      {"name" => "czces", "model_name" => "CzceHft"},
+    ]
 
-    frequences = [ :second, :minute, :hour, :day, :week, :month, :year ]
-
-    ["cffexes","czces"].each do |market|
+    markets.each do |market|
       # get target_month
-      get_contract_month_by_product_type(market).each_with_index do |t, i|
-        frequences.each do |frequence|
-          sampling_begin_time = get_sampling_begin_time(t, frequence)
-          ap("Sampling begin time : #{sampling_begin_time}")
-          if fill_empty_sampling_interval? frequence
-            query_cmd = get_query_command_interval_filling(frequence, t["contract_month"], t["product_type"], market, sampling_begin_time)
-          else
-            query_cmd = get_query_command(frequence, t["contract_month"], t["product_type"], market, sampling_begin_time)
-          end
-          ActiveRecord::Base.connection.execute(query_cmd).each_with_index do |raw_record, j|
+      ap("Current market #{market}")
+      get_contract_month_by_product_type(market["name"]).each_with_index do |t, i|
+        frequences.each do |frequence|          
+          query_expression = get_query_command_by_interval_or_normal(frequence, t, market)
+          ap(query_expression)
+          ActiveRecord::Base.connection.execute(query_expression).each_with_index do |raw_record, j|
             rec = raw_record.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
             begin
-              hft = CzceHft.create(
+              next if no_data_on_this_day?(rec, frequence, market["model_name"])
+              hft = market["model_name"].constantize.create(
                   product_type: t["product_type"],
                   contract_month: t["contract_month"],
                   open: rec[:open].to_f,
@@ -42,11 +35,11 @@ namespace :sampling do
                   time: rec[:time],
                 )
             rescue Exception => e
-              ap(e)  
-              ap(query_cmd)          
+              ap(e)
+              ap(query_expression)          
               next
             end
-            ap(hft) if (j%200000==0)
+            ap(hft) if (j%200000==0) and j > 20000
           end
         end
       end
