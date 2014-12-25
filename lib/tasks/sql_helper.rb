@@ -1,32 +1,6 @@
 module SqlHelper
 
-
-  def query_by_interval(interval, begin_time, end_time, product_type='SR', market='czces')
-    %{
-      SELECT DISTINCT ON (1)
-           date_trunc('#{interval}', ticktime) AS ticktime_stamp
-         , first_value(last_price) OVER w AS open
-         , max(last_price)         OVER w AS high
-         , min(last_price)         OVER w AS low
-         , last_value(last_price)  OVER w AS close
-         , sum(last_volume)        OVER w AS tt_volume
-         , product_type
-         , contract_month
-        FROM   #{market}
-        WHERE  ticktime >= '#{begin_time}'::timestamp
-        AND    ticktime <  '#{end_time}'::timestamp
-        AND    product_type ='#{product_type}'
-        AND    contract_month = '2014-09-01 00:00:00'::timestamp
-        WINDOW w AS (PARTITION BY date_trunc('#{interval}', ticktime) ORDER BY ticktime
-                     ROWS BETWEEN UNBOUNDED PRECEDING
-                              AND UNBOUNDED FOLLOWING)
-        ORDER  BY 1
-        LIMIT 10
-        ;
-    }.gsub(/\s+/, " ").strip
-  end
-
-  def get_query_command(frequence, contract_month, product_type, market, begin_time)
+  def get_query_command(frequence, contract_month, product_type, market, sampling_begin_time)
     %{
       SELECT DISTINCT ON (1)
            date_trunc('#{frequence}', ticktime) AS time
@@ -40,7 +14,7 @@ module SqlHelper
         FROM   #{market}
         WHERE  product_type = '#{product_type}'
         AND    contract_month = '#{contract_month}'::timestamp
-        AND    ticktime >= '#{begin_time}'
+        AND    ticktime >= '#{sampling_begin_time}'
         WINDOW w AS (PARTITION BY date_trunc('#{frequence}', ticktime) ORDER BY ticktime
                      ROWS BETWEEN UNBOUNDED PRECEDING
                               AND UNBOUNDED FOLLOWING)
@@ -49,8 +23,7 @@ module SqlHelper
     }.gsub(/\s+/, " ").strip
   end
 
-
-  def get_query_command_interval_filling(frequence, contract_month, product_type, market, begin_time)
+  def get_query_command_interval_filling(frequence, contract_month, product_type, market, sampling_begin_time)
     %{
         SELECT DISTINCT ON (time)
            time_series.ticktime AS time,
@@ -60,7 +33,7 @@ module SqlHelper
            t.close,
            t.volume,
            t.product_type,
-           t.contract_month           
+           t.contract_month
         FROM 
         (
           SELECT DISTINCT ON (1) generate_series
@@ -68,9 +41,9 @@ module SqlHelper
             date_trunc('second', min(ticktime)::TIMESTAMP),
             max(ticktime)::TIMESTAMP,
             '1 #{frequence}'::interval
-          ) AS ticktime FROM czces WHERE product_type ='#{product_type}' AND contract_month = '#{contract_month}'::timestamp
+          ) AS ticktime FROM #{market} WHERE product_type ='#{product_type}' AND contract_month = '#{contract_month}'::timestamp
 
-        ) time_series         
+        ) time_series
         LEFT JOIN
         (
           SELECT  DISTINCT ON (1)
@@ -81,8 +54,8 @@ module SqlHelper
             last_value(last_price)  OVER w AS close,
             sum(last_volume) OVER w AS volume,
             product_type,
-            contract_month             
-            FROM czces
+            contract_month
+            FROM #{market}
             WHERE product_type ='#{product_type}' 
             AND contract_month = '#{contract_month}'::timestamp
             WINDOW w AS (PARTITION BY date_trunc('#{frequence}', ticktime) ORDER BY ticktime
@@ -90,13 +63,26 @@ module SqlHelper
                          AND UNBOUNDED FOLLOWING)
         ) t USING (ticktime)
         WHERE 
-        time_series.ticktime::time >= '00:59 am'::time 
-        AND time_series.ticktime::time < '7:00 am'::time
-        AND time_series.ticktime > '#{begin_time}'::TIMESTAMP 
+        time_series.ticktime::time >= '#{market_begin_end_time[market]["begin_at"]}'::time 
+        AND time_series.ticktime::time < '#{market_begin_end_time[market]["end_at"]}'::time
+        AND time_series.ticktime > '#{sampling_begin_time}'::TIMESTAMP 
         ORDER BY 1 
         ;
 
-    }.gsub(/\s+/, " ").strip    
+    }.gsub(/\s+/, " ").strip
+  end
+
+  def market_begin_end_time
+    {
+      "czces" => {
+        "begin_at" => '00:59 am',
+        "end_at" => '07:00 am'
+        },
+      "cffexes" => {
+        "begin_at" => '01:14 am',
+        "end_at" => '07:16 am'
+      }
+    }    
   end
 
 
