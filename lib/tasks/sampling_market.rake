@@ -8,8 +8,8 @@ namespace :sampling do
 
     frequences = [ :day, :second, :minute, :hour, :week, :month, :year]
     markets = [
-      {"name" => "cffexes", "model_name" => "CffexHft"},
-      {"name" => "czces", "model_name" => "CzceHft"},
+      {"name" => "cffexes", "model_name" => "CffexHft", "hft_table_name" => "cffex_hfts"},
+      {"name" => "czces", "model_name" => "CzceHft", "hft_table_name" => "czce_hfts"},
     ]
 
     markets.each do |market|
@@ -22,7 +22,7 @@ namespace :sampling do
           ActiveRecord::Base.connection.execute(query_expression).each_with_index do |raw_record, j|
             rec = raw_record.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
             begin
-              next if no_data_on_this_day?(rec, frequence, market["model_name"])
+              # next if no_data_on_this_day?(rec, frequence, market["model_name"])
               hft = market["model_name"].constantize.create(
                   product_type: t["product_type"],
                   contract_month: t["contract_month"],
@@ -36,7 +36,7 @@ namespace :sampling do
                 )
             rescue Exception => e
               ap(e)
-              ap(query_expression)          
+              ap(query_expression)
               next
             end
             ap(hft) if (j%200000==0) and j > 20000
