@@ -16,15 +16,37 @@ RSpec.describe QueriesController, :type => :controller do
     #   get :index, {sample_freq: "day", begin_time: Date.today}
     # end
 
-    skip "with start_dt and end_at, frequency: hour" do
+    it "with start_dt and end_dt, frequency: second" do
+      get :index, {
+        market: "cffex_hfts",
+        product: "IF",
+        frequency: "second",
+        contract_month: "2014-03-01 00:00:00",
+        start_dt: "2014-01-20 05:26:00",
+        end_dt: "2014-01-20 06:16:00"
+      }
+    end
+
+    it "with start_dt and end_dt, frequency: hour" do
       get :index, {
         market: "cffex_hfts",
         product: "IF",
         frequency: "hour",
         contract_month: "2014-03-01 00:00:00",
-        start_dt: "2014-01-01 01:26:00",
-        end_dt: "2014-01-30 08:26:00"
-      }      
+        start_dt: "2014-01-04 01:26:00",
+        end_dt: "2014-01-14 08:26:00"
+      }
+    end
+
+    it "with start_dt and end_dt, frequency: day" do
+      get :index, {
+        market: "cffex_hfts",
+        product: "IF",
+        frequency: "day",
+        contract_month: "2014-02-01 00:00:00",
+        start_dt: "2014-01-04 01:26:00",
+        end_dt: "2014-01-14 08:26:00"
+      }
     end
 
     it "with delta 10 day freq in hour" do
