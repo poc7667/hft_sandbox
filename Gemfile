@@ -51,7 +51,7 @@ gem "ember-source"
 gem "emblem-rails"
 gem "jquery-rails"
 
-group :development do
+group :development, :test do
   gem "rspec-rails"
   gem "guard-rspec"
   gem "rspec-deep-ignore-order-matcher"
@@ -66,6 +66,11 @@ group :development do
   #fast command
   gem "spring"
   gem "zeus"
+  gem "spring-commands-rspec"
 end
 
 gem "paperclip", "~> 4.1"
+gem 'spork-rails'
+#optimize json render
+gem "oj"
+gem 'oj_mimic_json'
