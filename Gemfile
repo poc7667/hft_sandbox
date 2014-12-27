@@ -66,6 +66,8 @@ group :development, :test do
   #fast command
   gem "spring"
   gem "zeus"
+  gem "spring-commands-rspec"
 end
 
 gem "paperclip", "~> 4.1"
+gem 'spork-rails'

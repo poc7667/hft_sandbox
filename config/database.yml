@@ -9,7 +9,8 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: fly_china_market_test
+  database: fly_china_market_development
+  # database: fly_china_market_test
   pool: 5
   username: <%=  ENV['database_username'] %>
   password: <%= ENV['database_password'] %>
