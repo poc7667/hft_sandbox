@@ -8,8 +8,11 @@ class QueriesController < ApplicationController
 
   def index
     @errors = []
-    # render json: get_query_result
-    render json: Oj.dump(get_query_result.to_a, mode: :compat)
+    begin
+      render json: Oj.dump(get_query_result.to_a, mode: :compat)
+    rescue Exception => e
+      render json: { :errors => "#{e.to_s}" }
+    end
   end
 
   def show
