@@ -1,12 +1,15 @@
 class QueriesController < ApplicationController
   before_action :set_query, only: [:show, :edit, :update, :destroy]
   include QueriesHelper
+  include Queryable
+  include DatetimeHelper
 
   respond_to :html
 
   def index
-    q_str = query_str(params["sample_freq"], params["begin_time"], params["end_time"], params["product_type"])
-    render json: ActiveRecord::Base.connection.select_all(q_str)
+    @errors = []
+    get_query_result
+    # render json: ActiveRecord::Base.connection.select_all(q_str)
   end
 
   def show
