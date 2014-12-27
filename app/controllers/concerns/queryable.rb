@@ -43,7 +43,8 @@ module Queryable
   end
 
   def print_query_log
-    ap("http://localhost:3000/?"+URI::unescape(q.to_query))
+    ap("http://#{request.env["HTTP_HOST"]}/?"+URI::unescape(q.to_query))
+    print "\n\n"
   end
 
 
