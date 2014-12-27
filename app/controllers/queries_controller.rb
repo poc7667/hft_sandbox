@@ -4,12 +4,12 @@ class QueriesController < ApplicationController
   include Queryable
   include DatetimeHelper
 
-  respond_to :html
+  respond_to :json
 
   def index
     @errors = []
-    get_query_result
-    # render json: ActiveRecord::Base.connection.select_all(q_str)
+    # render json: get_query_result
+    render json: Oj.dump(get_query_result.to_a, mode: :compat)
   end
 
   def show

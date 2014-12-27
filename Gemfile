@@ -71,3 +71,6 @@ end
 
 gem "paperclip", "~> 4.1"
 gem 'spork-rails'
+#optimize json render
+gem "oj"
+gem 'oj_mimic_json'
